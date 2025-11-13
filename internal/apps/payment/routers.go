@@ -28,6 +28,7 @@ import (
 	"errors"
 	"fmt"
 	"net/http"
+	"net/url"
 	"strconv"
 	"time"
 
@@ -137,7 +138,7 @@ func CreateMerchantOrder(c *gin.Context) {
 			}
 
 			response.OrderID = order.ID
-			response.PayURL = fmt.Sprintf("%s?order_no=%s", config.Config.App.FrontendPayURL, encryptString)
+			response.PayURL = fmt.Sprintf("%s?order_no=%s", config.Config.App.FrontendPayURL, url.QueryEscape(encryptString))
 			return nil
 		},
 	); err != nil {
@@ -178,6 +179,7 @@ func GetMerchantOrder(c *gin.Context) {
 		c.JSON(http.StatusInternalServerError, util.Err(err.Error()))
 		return
 	}
+	order.PayerUsername = orderCtx.CurrentUser.Username
 
 	c.JSON(http.StatusOK, util.OK(GetOrderResponse{
 		Order:         &order,
