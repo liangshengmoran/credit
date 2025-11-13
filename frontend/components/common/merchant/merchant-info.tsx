@@ -63,9 +63,9 @@ export function MerchantInfo({ apiKey, onUpdate, onDelete }: MerchantInfoProps) 
   }
 
   return (
-    <div className="space-y-4 sticky top-6">
+    <div className="space-y-4 sticky top-0">
       <div>
-        <h2 className="font-semibold mb-4">应用信息</h2>
+        <h2 className="text-sm font-semibold mb-4">应用信息</h2>
         <div className="border border-dashed rounded-lg">
           <div className="px-3 py-2 flex items-center justify-between border-b border-dashed last:border-b-0">
             <label className="text-xs font-medium text-muted-foreground">应用名称</label>
@@ -115,7 +115,7 @@ export function MerchantInfo({ apiKey, onUpdate, onDelete }: MerchantInfoProps) 
       </div>
 
       <div>
-        <h2 className="font-semibold mb-4">API 凭证</h2>
+        <h2 className="text-sm font-semibold mb-4">API 配置列表</h2>
         <div className="border border-dashed rounded-lg px-3 py-2 space-y-4">
           <div>
             <div className="flex items-center justify-between mb-2">
@@ -172,7 +172,7 @@ export function MerchantInfo({ apiKey, onUpdate, onDelete }: MerchantInfoProps) 
       </div>
 
       <div>
-        <h2 className="text-sm font-semibold mb-3">应用管理</h2>
+        <h2 className="text-sm font-semibold mb-4">应用管理</h2>
         <div className="flex gap-2">
           <MerchantDialog
             mode="update"

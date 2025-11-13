@@ -3,91 +3,24 @@
 import * as React from "react"
 import { useState, useEffect } from "react"
 import { toast } from "sonner"
-import { Skeleton } from "@/components/ui/skeleton"
-import { useMerchantData } from "@/hooks/use-merchant"
+import { motion } from "motion/react"
+import { useMerchant } from "@/contexts/merchant-context"
 import { type MerchantAPIKey } from "@/lib/services"
 import { ErrorDisplay } from "../status/error"
 import { EmptyState } from "../status/empty"
+import { LoadingPage } from "../status/loading"
 import { MerchantSelector } from "./merchant-selector"
 import { MerchantInfo } from "./merchant-info"
 import { MerchantData } from "./merchant-data"
 import { MerchantDialog } from "./merchant-dialog"
 
-/**
- * 商户页面骨架屏组件
- * 显示加载状态的占位符
- */
-function MerchantSkeleton() {
-  return (
-    <div className="space-y-6">
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        <div className="lg:col-span-2 space-y-6">
-          <div>
-            <Skeleton className="h-5 w-20 mb-3" />
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-              <Skeleton className="h-20 w-full rounded-lg" />
-              <Skeleton className="h-20 w-full rounded-lg" />
-              <Skeleton className="h-20 w-full rounded-lg" />
-              <Skeleton className="h-20 w-full rounded-lg" />
-              <Skeleton className="h-20 w-full rounded-lg" />
-              <Skeleton className="h-20 w-full rounded-lg" />
-            </div>
-          </div>
-
-          <div>
-            <Skeleton className="h-5 w-16 mb-4" />
-            <div className="space-y-2">
-              <Skeleton className="h-9 w-full rounded-lg" />
-              <Skeleton className="h-80 w-full rounded-lg" />
-            </div>
-          </div>
-        </div>
-
-        <div className="lg:col-span-1 space-y-4 sticky top-6">
-          <div>
-            <Skeleton className="h-5 w-16 mb-3" />
-            <div className="bg-muted/50 rounded-lg divide-y">
-              <Skeleton className="h-8 w-full" />
-              <Skeleton className="h-8 w-full" />
-              <Skeleton className="h-8 w-full" />
-              <Skeleton className="h-8 w-full" />
-              <Skeleton className="h-8 w-full" />
-            </div>
-          </div>
-
-          <div>
-            <Skeleton className="h-5 w-16 mb-3" />
-            <div className="bg-muted/50 rounded-lg px-3 py-2 space-y-4">
-              <div>
-                <Skeleton className="h-3 w-16 mb-2" />
-                <Skeleton className="h-8 w-full rounded-sm" />
-              </div>
-              <div>
-                <Skeleton className="h-3 w-20 mb-2" />
-                <Skeleton className="h-8 w-full rounded-sm" />
-              </div>
-            </div>
-          </div>
-
-          <div>
-            <Skeleton className="h-5 w-16 mb-3" />
-            <div className="flex gap-2">
-              <Skeleton className="h-7 w-20 rounded" />
-              <Skeleton className="h-7 w-20 rounded" />
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  )
-}
 
 /**
  * 商户主页面组件
  * 负责组装商户中心的各个子组件
  */
 export function MerchantMain() {
-  const { apiKeys, loading, error, loadAPIKeys, createAPIKey, updateAPIKey, deleteAPIKey } = useMerchantData()
+  const { apiKeys, error, loadAPIKeys, createAPIKey, updateAPIKey, deleteAPIKey } = useMerchant()
   const [selectedKeyId, setSelectedKeyId] = useState<number | null>(null)
 
   const selectedKey = apiKeys.find(key => key.id === selectedKeyId) || null
@@ -142,9 +75,13 @@ export function MerchantMain() {
     }
   }
 
+  if (apiKeys.length === 0) {
+    return <LoadingPage />
+  }
+
   return (
     <div className="py-6">
-      <div className="flex items-center justify-between border-b border-border pb-2 mb-6">
+      <div className="flex items-center justify-between border-b border-border pb-2 mb-4">
         <h1 className="text-2xl font-semibold">商户中心</h1>
         <div className="flex items-center gap-3">
           {apiKeys.length > 0 && (
@@ -162,22 +99,40 @@ export function MerchantMain() {
         </div>
       </div>
 
-      {loading ? (
-        <MerchantSkeleton />
-      ) : error ? (
-        <ErrorDisplay
-          title="加载失败"
-          message={error}
-          onRetry={loadAPIKeys}
-          retryText="重试"
-        />
+      {error ? (
+        <motion.div
+          key="error"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ duration: 0.3, ease: "easeOut" }}
+        >
+          <ErrorDisplay
+            title="加载失败"
+            message={error}
+            onRetry={loadAPIKeys}
+            retryText="重试"
+          />
+        </motion.div>
       ) : apiKeys.length === 0 ? (
+        <motion.div
+          key="empty"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ duration: 0.3, ease: "easeOut" }}
+        >
           <EmptyState
             title="商户应用列表为空"
             description="请创建您的第一个商户应用，以便开始接入支付功能"
           />
+        </motion.div>
       ) : (
-        <div className="space-y-6">
+        <motion.div
+          key="content"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ duration: 0.6, ease: "easeOut" }}
+          className="space-y-6"
+        >
           {selectedKey && (
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
               <div className="lg:col-span-2">
@@ -189,7 +144,7 @@ export function MerchantMain() {
               </div>
             </div>
           )}
-        </div>
+        </motion.div>
       )}
     </div>
   )

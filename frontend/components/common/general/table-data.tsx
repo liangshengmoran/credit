@@ -35,11 +35,10 @@ export function TransactionDataTable({ transactions }: { transactions: Order[] }
             </TableRow>
           </TableHeader>
           <TableBody className="animate-in fade-in duration-200">
-            {transactions.map((order, idx) => (
+            {transactions.map((order) => (
               <TransactionTableRow
                 key={order.order_no}
                 order={order}
-                showDottedBorder={idx !== transactions.length - 1}
               />
             ))}
           </TableBody>

@@ -16,6 +16,7 @@ import {
   ChevronDown,
   UserRound,
   FileQuestionMark,
+  ShieldCheck,
 } from "lucide-react"
 import { AnimateIcon } from "@/components/animate-ui/icons/icon"
 import { ChevronLeft } from "@/components/animate-ui/icons/chevron-left"
@@ -79,6 +80,18 @@ const data = {
       title: "余额",
       url: "/balance",
       icon: Wallet,
+    },
+  ],
+  admin: [
+    {
+      title: "系统配置",
+      url: "/admin/system",
+      icon: ShieldCheck,
+    },
+    {
+      title: "支付配置",
+      url: "/admin/user_pay",
+      icon: Settings,
     },
   ],
   document: [
@@ -201,6 +214,30 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
           <SidebarGroupContent className="py-1">
             <SidebarMenu className="gap-1">
               {data.navMain.map((item) => (
+                <SidebarMenuItem key={item.title}>
+                  <SidebarMenuButton
+                    tooltip={item.title}
+                    isActive={pathname === item.url}
+                    asChild
+                  >
+                    <Link href={item.url}>
+                      {item.icon && <item.icon />}
+                      <span>{item.title}</span>
+                    </Link>
+                  </SidebarMenuButton>
+                </SidebarMenuItem>
+              ))}
+            </SidebarMenu>
+          </SidebarGroupContent>
+        </SidebarGroup>
+
+        <SidebarGroup className="py-0 pt-4">
+          <SidebarGroupLabel className="text-xs font-normal text-muted-foreground">
+            管理
+          </SidebarGroupLabel>
+          <SidebarGroupContent className="py-1">
+            <SidebarMenu className="gap-1">
+              {data.admin.map((item) => (
                 <SidebarMenuItem key={item.title}>
                   <SidebarMenuButton
                     tooltip={item.title}
