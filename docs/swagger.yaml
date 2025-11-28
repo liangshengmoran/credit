@@ -163,6 +163,24 @@ definitions:
     - order_no
     - pay_key
     type: object
+  payment.TransferRequest:
+    properties:
+      amount:
+        type: number
+      pay_key:
+        type: string
+      recipient_id:
+        type: integer
+      recipient_username:
+        type: string
+      remark:
+        type: string
+    required:
+    - amount
+    - pay_key
+    - recipient_id
+    - recipient_username
+    type: object
   system_config.CreateSystemConfigRequest:
     properties:
       description:
@@ -413,6 +431,19 @@ paths:
             $ref: '#/definitions/util.ResponseAny'
       tags:
       - admin
+  /api/v1/config/public:
+    get:
+      consumes:
+      - application/json
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/util.ResponseAny'
+      tags:
+      - config
   /api/v1/health:
     get:
       produces:
@@ -746,6 +777,26 @@ paths:
             $ref: '#/definitions/util.ResponseAny'
       tags:
       - order
+  /api/v1/payment/transfer:
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: 转账请求
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/payment.TransferRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/util.ResponseAny'
+      tags:
+      - payment
   /api/v1/user/pay-key:
     put:
       consumes:

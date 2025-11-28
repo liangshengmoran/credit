@@ -22,12 +22,38 @@
  * SOFTWARE.
  */
 
-package dispute
+package config
 
-const (
-	OrderNotFoundForDispute  = "订单不存在"
-	DisputeNotFound          = "争议不存在"
-	NotOrderMerchant         = "您不是该订单的商家"
-	ReasonRequiredForRefusal = "拒绝退款时必须提供理由"
-	DisputeTimeWindowExpired = "订单已交易完成,超过争议时间窗口,无法发起争议"
+import (
+	"net/http"
+
+	"github.com/gin-gonic/gin"
+	"github.com/linux-do/pay/internal/model"
+	"github.com/linux-do/pay/internal/util"
 )
+
+// PublicConfigResponse 公共配置响应
+type PublicConfigResponse struct {
+	DisputeTimeWindowHours int `json:"dispute_time_window_hours"` // 争议时间窗口（小时）
+}
+
+// GetPublicConfig 获取公共配置
+// @Tags config
+// @Accept json
+// @Produce json
+// @Success 200 {object} util.ResponseAny
+// @Router /api/v1/config/public [get]
+func GetPublicConfig(c *gin.Context) {
+	// 获取争议时间窗口配置
+	disputeTimeHours, err := model.GetIntByKey(c.Request.Context(), model.ConfigKeyDisputeTimeWindowHours)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, util.Err(err.Error()))
+		return
+	}
+
+	response := PublicConfigResponse{
+		DisputeTimeWindowHours: disputeTimeHours,
+	}
+
+	c.JSON(http.StatusOK, util.OK(response))
+}

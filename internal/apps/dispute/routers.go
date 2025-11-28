@@ -27,6 +27,7 @@ package dispute
 import (
 	"errors"
 	"net/http"
+	"time"
 
 	"github.com/gin-gonic/gin"
 	"github.com/linux-do/pay/internal/apps/oauth"
@@ -185,6 +186,13 @@ func CreateDispute(c *gin.Context) {
 
 	user, _ := oauth.GetUserFromContext(c)
 
+	// 获取争议时间窗口配置（小时）
+	disputeTimeHours, errKey := model.GetIntByKey(c.Request.Context(), model.ConfigKeyDisputeTimeWindowHours)
+	if errKey != nil {
+		c.JSON(http.StatusInternalServerError, util.Err(errKey.Error()))
+		return
+	}
+
 	dispute := model.Dispute{
 		OrderID:         req.OrderID,
 		InitiatorUserID: user.ID,
@@ -196,12 +204,19 @@ func CreateDispute(c *gin.Context) {
 		func(tx *gorm.DB) error {
 			var order model.Order
 			if err := tx.Clauses(clause.Locking{Strength: "UPDATE", Options: "NOWAIT"}).
-				Where("id = ? AND payer_user_id = ? AND status = ?", req.OrderID, user.ID, model.OrderStatusSuccess).
+				Where("id = ? AND payer_user_id = ? AND status = ? AND type = ?", req.OrderID, user.ID, model.OrderStatusSuccess, model.OrderTypePayment).
 				First(&order).Error; err != nil {
 				if errors.Is(err, gorm.ErrRecordNotFound) {
 					return errors.New(OrderNotFoundForDispute)
 				}
 				return err
+			}
+
+			// 检查是否在争议时间窗口内
+			// 订单支付时间 + 争议时间窗口 <= 当前时间，则无法发起争议
+			disputeDeadline := order.TradeTime.Add(time.Duration(disputeTimeHours) * time.Hour)
+			if time.Now().After(disputeDeadline) {
+				return errors.New(DisputeTimeWindowExpired)
 			}
 
 			if err := tx.Create(&dispute).Error; err != nil {
@@ -216,7 +231,14 @@ func CreateDispute(c *gin.Context) {
 			return nil
 		},
 	); err != nil {
-		c.JSON(http.StatusInternalServerError, util.Err(err.Error()))
+		errMsg := err.Error()
+		if errMsg == OrderNotFoundForDispute {
+			c.JSON(http.StatusNotFound, util.Err(OrderNotFoundForDispute))
+		} else if errMsg == DisputeTimeWindowExpired {
+			c.JSON(http.StatusBadRequest, util.Err(DisputeTimeWindowExpired))
+		} else {
+			c.JSON(http.StatusInternalServerError, util.Err(errMsg))
+		}
 		return
 	}
 
@@ -266,7 +288,7 @@ func RefundReview(c *gin.Context) {
 
 			var order model.Order
 			if err := tx.Clauses(clause.Locking{Strength: "UPDATE", Options: "NOWAIT"}).
-				Where("id = ? AND payee_user_id = ? AND status = ?", dispute.OrderID, merchantUser.ID, model.OrderStatusDisputing).
+				Where("id = ? AND payee_user_id = ? AND status = ? AND type = ?", dispute.OrderID, merchantUser.ID, model.OrderStatusDisputing, model.OrderTypePayment).
 				First(&order).Error; err != nil {
 				if errors.Is(err, gorm.ErrRecordNotFound) {
 					return errors.New(NotOrderMerchant)
@@ -382,7 +404,7 @@ func CloseDispute(c *gin.Context) {
 
 			var order model.Order
 			if err := tx.Clauses(clause.Locking{Strength: "UPDATE", Options: "NOWAIT"}).
-				Where("id = ? AND status = ?", dispute.OrderID, model.OrderStatusDisputing).
+				Where("id = ? AND status = ? AND type = ?", dispute.OrderID, model.OrderStatusDisputing, model.OrderTypePayment).
 				First(&order).Error; err != nil {
 				if errors.Is(err, gorm.ErrRecordNotFound) {
 					return errors.New(OrderNotFoundForDispute)

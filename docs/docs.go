@@ -289,6 +289,27 @@ const docTemplate = `{
                 }
             }
         },
+        "/api/v1/config/public": {
+            "get": {
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "config"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/util.ResponseAny"
+                        }
+                    }
+                }
+            }
+        },
         "/api/v1/health": {
             "get": {
                 "produces": [
@@ -820,6 +841,38 @@ const docTemplate = `{
                 }
             }
         },
+        "/api/v1/payment/transfer": {
+            "post": {
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "payment"
+                ],
+                "parameters": [
+                    {
+                        "description": "转账请求",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/payment.TransferRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/util.ResponseAny"
+                        }
+                    }
+                }
+            }
+        },
         "/api/v1/user/pay-key": {
             "put": {
                 "consumes": [
@@ -1080,6 +1133,32 @@ const docTemplate = `{
                 "pay_key": {
                     "type": "string",
                     "maxLength": 10
+                }
+            }
+        },
+        "payment.TransferRequest": {
+            "type": "object",
+            "required": [
+                "amount",
+                "pay_key",
+                "recipient_id",
+                "recipient_username"
+            ],
+            "properties": {
+                "amount": {
+                    "type": "number"
+                },
+                "pay_key": {
+                    "type": "string"
+                },
+                "recipient_id": {
+                    "type": "integer"
+                },
+                "recipient_username": {
+                    "type": "string"
+                },
+                "remark": {
+                    "type": "string"
                 }
             }
         },
