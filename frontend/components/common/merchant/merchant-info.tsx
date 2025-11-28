@@ -111,7 +111,7 @@ export function MerchantInfo({ apiKey, onUpdate, onDelete }: MerchantInfoProps) 
               <span className="text-[10px] text-muted-foreground">客户端标识</span>
             </div>
             <div className="flex items-center p-2 h-8 border border-dashed rounded-sm bg-background">
-              <code className="text-xs text-muted-foreground font-mono flex-1 overflow-x-auto leading-relaxed p-1">
+              <code className="text-xs text-muted-foreground font-mono flex-1 overflow-x-auto leading-relaxed p-1 [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]">
                 {showClientId ? apiKey.client_id : maskText(apiKey.client_id, 8)}
               </code>
               <Button
@@ -137,7 +137,7 @@ export function MerchantInfo({ apiKey, onUpdate, onDelete }: MerchantInfoProps) 
               <span className="text-[10px] text-muted-foreground">客户端密钥</span>
             </div>
             <div className="flex items-center p-2 h-8 border border-dashed rounded-sm bg-background">
-              <code className="text-xs text-muted-foreground font-mono flex-1 overflow-x-auto p-1">
+              <code className="text-xs text-muted-foreground font-mono flex-1 overflow-x-auto p-1 [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]">
                 {showClientSecret ? apiKey.client_secret : '•'.repeat(40)}
               </code>
               <Button

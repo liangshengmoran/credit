@@ -16,7 +16,8 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog"
-import { Table, TableHeader, TableRow, TableHead, TableBody, TableCell } from "@/components/ui/table"
+import { TableHeader, TableRow, TableHead, TableBody, TableCell } from "@/components/ui/table"
+import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area"
 
 
 interface ManagePageProps<T> {
@@ -323,67 +324,70 @@ export function ManageTable<T>({
 }) {
   return (
     <div className="border border-dashed shadow-none rounded-lg overflow-hidden">
-      <div className="overflow-x-auto">
-        <Table>
-          <TableHeader>
-            <TableRow className="border-b border-dashed">
-              {columns.map((col, index) => (
-                <TableHead
-                  key={index}
-                  className={`whitespace-nowrap ${col.width ? `w-[${col.width}]` : ''} ${col.align === 'center' ? 'text-center' : col.align === 'right' ? 'text-right' : ''} ${col.className || ''}`}
-                >
-                  {col.header}
-                </TableHead>
-              ))}
-              <TableHead className="whitespace-nowrap text-center w-[120px]">操作</TableHead>
-            </TableRow>
-          </TableHeader>
-          <TableBody className="animate-in fade-in duration-200">
-            {data.map((item) => {
-              const id = getId(item)
-              const isSelected = selected && getId(selected) === id
-              const isHovered = hovered && getId(hovered) === id
+      <ScrollArea className="w-full">
+        <div className="relative w-full">
+          <table className="w-full caption-bottom text-sm">
+            <TableHeader>
+              <TableRow className="border-b border-dashed">
+                {columns.map((col, index) => (
+                  <TableHead
+                    key={index}
+                    className={`whitespace-nowrap ${col.width ? `w-[${col.width}]` : ''} ${col.align === 'center' ? 'text-center' : col.align === 'right' ? 'text-right' : ''} ${col.className || ''}`}
+                  >
+                    {col.header}
+                  </TableHead>
+                ))}
+                <TableHead className="whitespace-nowrap text-center w-[120px]">操作</TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody className="animate-in fade-in duration-200">
+              {data.map((item) => {
+                const id = getId(item)
+                const isSelected = selected && getId(selected) === id
+                const isHovered = hovered && getId(hovered) === id
 
-              return (
-                <TableRow
-                  key={id}
-                  className={`border-b border-dashed cursor-pointer transition-colors ${isSelected
-                    ? 'bg-blue-50 hover:bg-blue-100'
-                    : isHovered
-                      ? 'bg-gray-50 hover:bg-gray-100'
-                      : 'hover:bg-gray-50'
-                    }`}
-                  onMouseEnter={() => onHover(item)}
-                  onMouseLeave={() => onHover(null)}
-                  onClick={() => onSelect(item)}
-                >
-                  {columns.map((col, index) => (
-                    <TableCell
-                      key={index}
-                      className={`text-xs py-1 ${col.align === 'center' ? 'text-center' : col.align === 'right' ? 'text-right' : ''} ${col.className || ''}`}
-                    >
-                      {col.cell(item)}
+                return (
+                  <TableRow
+                    key={id}
+                    className={`border-b border-dashed cursor-pointer transition-colors ${isSelected
+                      ? 'bg-blue-50 hover:bg-blue-100'
+                      : isHovered
+                        ? 'bg-gray-50 hover:bg-gray-100'
+                        : 'hover:bg-gray-50'
+                      }`}
+                    onMouseEnter={() => onHover(item)}
+                    onMouseLeave={() => onHover(null)}
+                    onClick={() => onSelect(item)}
+                  >
+                    {columns.map((col, index) => (
+                      <TableCell
+                        key={index}
+                        className={`text-xs py-1 ${col.align === 'center' ? 'text-center' : col.align === 'right' ? 'text-right' : ''} ${col.className || ''}`}
+                      >
+                        {col.cell(item)}
+                      </TableCell>
+                    ))}
+                    <TableCell className="text-xs py-1 text-center">
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        className="h-6 w-6 text-muted-foreground hover:text-red-600 hover:bg-red-50"
+                        onClick={(e) => {
+                          e.stopPropagation()
+                          onDelete(item)
+                        }}
+                      >
+                        <Trash2 className="h-3.5 w-3.5" />
+                      </Button>
                     </TableCell>
-                  ))}
-                  <TableCell className="text-xs py-1 text-center">
-                    <Button
-                      variant="ghost"
-                      size="icon"
-                      className="h-6 w-6 text-muted-foreground hover:text-red-600 hover:bg-red-50"
-                      onClick={(e) => {
-                        e.stopPropagation()
-                        onDelete(item)
-                      }}
-                    >
-                      <Trash2 className="h-3.5 w-3.5" />
-                    </Button>
-                  </TableCell>
-                </TableRow>
-              )
-            })}
-          </TableBody>
-        </Table>
-      </div>
+                  </TableRow>
+                )
+              })}
+            </TableBody>
+          </table>
+        </div>
+        <ScrollBar orientation="horizontal" />
+      </ScrollArea>
     </div>
   )
 }

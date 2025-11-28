@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import {Inter, Noto_Sans_SC} from 'next/font/google';
+import {Inter, Noto_Sans_SC, Geist_Mono} from 'next/font/google';
 import { Toaster } from "@/components/ui/sonner";
 import "./globals.css";
 
@@ -10,10 +10,15 @@ const inter = Inter({
 });
 
 const notoSansSC = Noto_Sans_SC({
-  variable: '--font-sans',
+  variable: '--font-noto-sans-sc',
   subsets: ['latin'],
   display: 'swap',
   weight: ['300', '400', '500', '600', '700']
+});
+
+const geistMono = Geist_Mono({
+  variable: '--font-geist-mono',
+  subsets: ['latin'],
 });
 
 export const metadata: Metadata = {
@@ -29,11 +34,11 @@ export default function RootLayout({
   return (
     <html
       lang="zh-CN"
-      className={`${inter.variable} ${notoSansSC.variable} hide-scrollbar font-sans`}
+      className={`${inter.variable} ${notoSansSC.variable} ${geistMono.variable} hide-scrollbar font-sans`}
       suppressHydrationWarning
     >
       <body
-        className={`${inter.variable} ${notoSansSC.variable} hide-scrollbar font-sans antialiased`}
+        className={`${inter.variable} ${notoSansSC.variable} ${geistMono.variable} hide-scrollbar font-sans antialiased`}
       >
         {children}
         <Toaster position="top-center" />

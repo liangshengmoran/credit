@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { typeConfig, statusConfig } from "@/components/common/general/table-filter"
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip"
-import { Table, TableHeader, TableRow, TableHead, TableBody, TableCell } from "@/components/ui/table"
+import { TableHeader, TableRow, TableHead, TableBody, TableCell } from "@/components/ui/table"
 import { Spinner } from "@/components/ui/spinner"
 import { ErrorInline } from "@/components/layout/error"
 import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area"
@@ -41,32 +41,34 @@ export function TransactionDataTable({ transactions }: { transactions: Order[] }
   return (
     <div className="border border-dashed shadow-none rounded-lg overflow-hidden">
       <ScrollArea className="w-full">
-        <Table>
-          <TableHeader>
-            <TableRow className="border-b border-dashed">
-              <TableHead className="whitespace-nowrap w-[120px]">名称</TableHead>
-              <TableHead className="whitespace-nowrap text-center min-w-[60px]">金额</TableHead>
-              <TableHead className="whitespace-nowrap text-center min-w-[50px]">类型</TableHead>
-              <TableHead className="whitespace-nowrap text-center min-w-[50px]">状态</TableHead>
-              <TableHead className="whitespace-nowrap text-center min-w-[80px]">资金流</TableHead>
-              <TableHead className="whitespace-nowrap text-center min-w-[80px]">商户名</TableHead>
-              <TableHead className="whitespace-nowrap text-left min-w-[120px]">订单号</TableHead>
-              <TableHead className="whitespace-nowrap text-left min-w-[120px]">商户订单号</TableHead>
-              <TableHead className="whitespace-nowrap text-left w-[120px]">创建时间</TableHead>
-              <TableHead className="whitespace-nowrap text-left w-[120px]">交易时间</TableHead>
-              <TableHead className="whitespace-nowrap text-left w-[120px]">订单过期时间</TableHead>
-              <TableHead className="sticky right-0 whitespace-nowrap text-center bg-background shadow-[-4px_0_8px_-2px_rgba(0,0,0,0.1)] w-[150px]">操作</TableHead>
-            </TableRow>
-          </TableHeader>
-          <TableBody className="animate-in fade-in duration-200">
-            {transactions.map((order) => (
-              <TransactionTableRow
-                key={order.order_no}
-                order={order}
-              />
-            ))}
-          </TableBody>
-        </Table>
+        <div className="relative w-full">
+          <table className="w-full caption-bottom text-sm">
+            <TableHeader>
+              <TableRow className="border-b border-dashed">
+                <TableHead className="whitespace-nowrap w-[120px]">名称</TableHead>
+                <TableHead className="whitespace-nowrap text-center min-w-[60px]">金额</TableHead>
+                <TableHead className="whitespace-nowrap text-center min-w-[50px]">类型</TableHead>
+                <TableHead className="whitespace-nowrap text-center min-w-[50px]">状态</TableHead>
+                <TableHead className="whitespace-nowrap text-center min-w-[80px]">资金流</TableHead>
+                <TableHead className="whitespace-nowrap text-center min-w-[80px]">商户名</TableHead>
+                <TableHead className="whitespace-nowrap text-left min-w-[120px]">订单号</TableHead>
+                <TableHead className="whitespace-nowrap text-left min-w-[120px]">商户订单号</TableHead>
+                <TableHead className="whitespace-nowrap text-left w-[120px]">创建时间</TableHead>
+                <TableHead className="whitespace-nowrap text-left w-[120px]">交易时间</TableHead>
+                <TableHead className="whitespace-nowrap text-left w-[120px]">订单过期时间</TableHead>
+                <TableHead className="sticky right-0 whitespace-nowrap text-center bg-background shadow-[-4px_0_8px_-2px_rgba(0,0,0,0.1)] w-[150px] z-10">操作</TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody className="animate-in fade-in duration-200">
+              {transactions.map((order) => (
+                <TransactionTableRow
+                  key={order.order_no}
+                  order={order}
+                />
+              ))}
+            </TableBody>
+          </table>
+        </div>
         <ScrollBar orientation="horizontal" />
       </ScrollArea>
     </div>
@@ -819,7 +821,7 @@ function TransactionTableRow({ order }: { order: Order }) {
       <TableCell className="text-[11px] font-medium text-left py-1">
         {formatDateTime(order.expires_at)}
       </TableCell>
-      <TableCell className="sticky right-0 whitespace-nowrap text-center bg-background shadow-[-4px_0_8px_-2px_rgba(0,0,0,0.1)] py-1">
+      <TableCell className="sticky right-0 whitespace-nowrap text-center bg-background shadow-[-4px_0_8px_-2px_rgba(0,0,0,0.1)] py-1 z-10">
         <OrderDetailDialog order={order} />
 
         {/* 付款方：发起或取消争议 */}

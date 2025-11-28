@@ -292,7 +292,7 @@ export function LoginPage() {
                     setSetupStep('password')
                     setConfirmPayKey('')
                   }}
-                  className="w-[60px] font-bold"
+                  className="w-[60px]"
                 >
                   返回
                 </Button>
@@ -307,7 +307,7 @@ export function LoginPage() {
             >
               <Button
                 type="submit"
-                className={`w-auto font-bold ${setupStep === 'password' ? 'w-[220px]' : 'w-[160px]'}`}
+                className={`w-auto ${setupStep === 'password' ? 'w-[220px]' : 'w-[160px]'}`}
                 disabled={
                   setupStep === 'password'
                     ? !isPayKeyValid
