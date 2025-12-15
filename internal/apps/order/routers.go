@@ -94,8 +94,8 @@ func ListTransactions(c *gin.Context) {
 		case model.OrderTypeCommunity:
 			// community 类型：查询当前用户作为收款方的 community 订单
 			baseQuery = baseQuery.Where("orders.type = ? AND orders.payee_user_id = ?", orderType, user.ID)
-		case model.OrderTypePayment, model.OrderTypeTransfer:
-			// payment 和 transfer 类型：查询当前用户作为付款方的订单
+		case model.OrderTypePayment, model.OrderTypeTransfer, model.OrderTypeOnline:
+			// payment、transfer、online 类型：查询当前用户作为付款方的订单
 			baseQuery = baseQuery.Where("orders.type = ? AND orders.payer_user_id = ?", orderType, user.ID)
 		}
 	} else {
