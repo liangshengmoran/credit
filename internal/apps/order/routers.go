@@ -96,12 +96,12 @@ func ListTransactions(c *gin.Context) {
 			// community 类型：查询当前用户作为收款方的 community 订单
 			baseQuery = baseQuery.Where("orders.type = ? AND orders.payee_user_id = ?", orderType, user.ID)
 		case model.OrderTypeOnline:
-			// 不为空查询商家的 online 订单，否则按照付款人查询
+			// 不为空查询商家的 online 订单，否则按照 online 查询
 			if req.ClientID != "" {
 				baseQuery = baseQuery.Where("orders.type = ? AND orders.client_id = ?", orderType, req.ClientID)
 				clientIDHandled = true
 			} else {
-				baseQuery = baseQuery.Where("orders.type = ? AND orders.payer_user_id = ?", orderType, user.ID)
+				baseQuery = baseQuery.Where("orders.type = ? AND (orders.payer_user_id = ? OR orders.payee_user_id = ?)", orderType, user.ID, user.ID)
 			}
 		case model.OrderTypePayment, model.OrderTypeTransfer:
 			// payment、transfer 类型：查询当前用户作为付款方的订单
