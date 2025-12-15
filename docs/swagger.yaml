@@ -170,6 +170,7 @@ definitions:
         - payment
         - transfer
         - community
+        - online
         type: string
     type: object
   payment.CreateOrderRequest:

@@ -1369,7 +1369,8 @@
                         "receive",
                         "payment",
                         "transfer",
-                        "community"
+                        "community",
+                        "online"
                     ]
                 }
             }

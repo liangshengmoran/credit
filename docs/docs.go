@@ -1378,7 +1378,8 @@ const docTemplate = `{
                         "receive",
                         "payment",
                         "transfer",
-                        "community"
+                        "community",
+                        "online"
                     ]
                 }
             }
