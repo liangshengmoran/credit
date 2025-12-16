@@ -10,7 +10,7 @@ import {
   CommandItem,
   CommandList,
 } from "@/components/ui/command"
-import { searchItems, type SearchItem } from "@/lib/search-data"
+import { searchItems, type SearchItem } from "@/lib/utils/search-data"
 import { Home, Settings, FileText, Shield } from "lucide-react"
 
 interface SearchDialogProps {

@@ -8,7 +8,7 @@ import * as z from "zod"
 import { toast } from "sonner"
 import { Breadcrumb, BreadcrumbItem, BreadcrumbLink, BreadcrumbList, BreadcrumbPage, BreadcrumbSeparator } from "@/components/ui/breadcrumb"
 import { Button } from "@/components/ui/button"
-import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form"
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form"
 import { Input } from "@/components/ui/input"
 import { UserService } from "@/lib/services/user"
 
@@ -84,11 +84,6 @@ export function SecurityMain() {
         <div className="font-medium text-sm text-muted-foreground">支付安全</div>
 
         <div>
-          <div className="text-sm font-medium mb-3">修改支付密码</div>
-          <div className="text-xs text-muted-foreground mb-4">
-            支付密码用于转账和其他支付操作，请设置6位数字密码
-          </div>
-
           <Form {...form}>
             <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4 max-w-md">
               <FormField
@@ -96,7 +91,7 @@ export function SecurityMain() {
                 name="newPayKey"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel className="text-sm">新支付密码</FormLabel>
+                    <FormLabel className="text-xs text-muted-foreground">新支付密码</FormLabel>
                     <FormControl>
                       <Input
                         type="password"
@@ -106,9 +101,6 @@ export function SecurityMain() {
                         {...field}
                       />
                     </FormControl>
-                    <FormDescription className="text-xs">
-                      密码必须是6位数字
-                    </FormDescription>
                     <FormMessage className="text-xs" />
                   </FormItem>
                 )}
@@ -119,11 +111,11 @@ export function SecurityMain() {
                 name="confirmPayKey"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel className="text-sm">确认支付密码</FormLabel>
+                    <FormLabel className="text-xs text-muted-foreground">确认支付密码</FormLabel>
                     <FormControl>
                       <Input
                         type="password"
-                        placeholder="请再次输入密码"
+                        placeholder="请再次输入6位密码"
                         maxLength={6}
                         className="h-9"
                         {...field}
@@ -134,12 +126,12 @@ export function SecurityMain() {
                 )}
               />
 
-              <div className="flex gap-3 pt-2">
-                <Button type="submit" disabled={isSubmitting} size="sm">
-                  {isSubmitting ? "保存中..." : "保存"}
-                </Button>
-                <Button type="button" variant="outline" size="sm" onClick={handleCancel}>
+              <div className="flex justify-end gap-3 pt-2">
+                <Button type="button" variant="secondary" size="sm" onClick={handleCancel}>
                   取消
+                </Button>
+                <Button type="submit" disabled={isSubmitting} size="sm">
+                  {isSubmitting ? "保存中" : "保存"}
                 </Button>
               </div>
             </form>

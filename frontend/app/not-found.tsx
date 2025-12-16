@@ -1,8 +1,9 @@
-"use client";
+"use client"
 
+import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { motion } from "motion/react";
-import { Home, ArrowLeft, Search } from "lucide-react";
+import { Home, ArrowLeft } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
 /**
@@ -10,110 +11,68 @@ import { Button } from "@/components/ui/button";
  * 当用户访问不存在的页面时显示
  */
 export default function NotFound() {
+  const router = useRouter();
+
   return (
-    <div className="relative min-h-screen w-full flex items-center justify-center bg-background overflow-hidden">
-      <div className="absolute inset-0 -z-10">
-        <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-primary/5 rounded-full blur-3xl animate-pulse" />
-        <div className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-blue-500/5 rounded-full blur-3xl animate-pulse delay-1000" />
+    <div className="relative min-h-screen w-full flex flex-col items-center justify-center bg-background overflow-hidden selection:bg-primary/20">
+      <div className="absolute inset-0 -z-10 overflow-hidden">
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[500px] bg-primary/20 rounded-full blur-[120px] opacity-20 animate-pulse" />
       </div>
 
-      <div className="container mx-auto px-6 py-12">
+      <div className="container px-6 flex flex-col items-center text-center z-10">
         <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6 }}
-          className="max-w-2xl mx-auto text-center"
+          initial={{ opacity: 0, scale: 0.95 }}
+          animate={{ opacity: 1, scale: 1 }}
+          transition={{ duration: 0.8, ease: "easeOut" }}
+          className="relative mb-6"
         >
-          <motion.div
-            initial={{ scale: 0.5, opacity: 0 }}
-            animate={{ scale: 1, opacity: 1 }}
-            transition={{ delay: 0.2, duration: 0.8, type: "spring" }}
-            className="mb-8"
-          >
-            <h1 className="text-[120px] md:text-[180px] font-bold leading-none bg-gradient-to-br from-foreground to-foreground/50 bg-clip-text text-transparent">
-              404
-            </h1>
-          </motion.div>
+          <h1 className="text-[12rem] md:text-[16rem] font-bold leading-none tracking-tighter text-transparent bg-clip-text bg-gradient-to-b from-foreground/10 to-foreground/5 select-none">
+            404
+          </h1>
+          <div className="absolute inset-0 flex items-center justify-center">
+            <span className="text-2xl font-medium tracking-[0.2em] text-foreground/80 uppercase">Page Not Found</span>
+          </div>
+        </motion.div>
 
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.4, duration: 0.6 }}
-            className="mb-8 space-y-3"
-          >
-            <h2 className="text-2xl md:text-3xl font-bold tracking-tight text-foreground">
-              页面走丢了
-            </h2>
-            <p className="text-muted-foreground text-base md:text-lg max-w-md mx-auto">
-              抱歉，您访问的页面不存在或已被移除。请检查 URL 是否正确，或返回首页继续浏览。
-            </p>
-          </motion.div>
+        <motion.div
+          initial={{ opacity: 0, y: 10 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.2, duration: 0.8 }}
+          className="space-y-8"
+        >
+          <p className="text-muted-foreground max-w-[400px] mx-auto text-sm leading-relaxed">
+            抱歉，您访问的页面似已迷失在数字星云中。
+            <br />
+            请检查路径或返回安全地带。
+          </p>
 
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.6, duration: 0.6 }}
-            className="flex flex-col sm:flex-row gap-4 justify-center items-center"
-          >
+          <div className="flex justify-center gap-4">
+            <Button
+              variant="secondary"
+              size="sm"
+              onClick={() => router.back()}
+              className="rounded-full w-24 text-xs border-foreground/10 hover:bg-foreground/10 transition-all duration-300"
+            >
+              <ArrowLeft className="size-3 opacity-70" />
+              上一页
+            </Button>
+
             <Link href="/">
               <Button
-                size="lg"
-                className="rounded-full px-8 bg-primary text-primary-foreground hover:bg-primary/90 shadow-lg shadow-primary/20"
+                variant="default"
+                size="sm"
+                className="rounded-full w-24 text-xs hover:bg-primary/80 transition-all duration-300"
               >
-                <Home className="w-4 h-4 mr-2" />
-                返回首页
+                <Home className="size-3" />
+                首页
               </Button>
             </Link>
-
-            <Link href="/home">
-              <Button
-                size="lg"
-                variant="outline"
-                className="rounded-full px-8 border-border hover:bg-accent"
-              >
-                <ArrowLeft className="w-4 h-4 mr-2" />
-                返回控制台
-              </Button>
-            </Link>
-          </motion.div>
-
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ delay: 0.8, duration: 0.6 }}
-            className="mt-12 pt-8 border-t border-border"
-          >
-            <div className="flex items-center justify-center gap-2 text-sm text-muted-foreground">
-              <Search className="w-4 h-4" />
-              <span>您可以尝试使用导航栏的搜索功能找到想要的内容</span>
-            </div>
-          </motion.div>
-
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ delay: 1, duration: 0.6 }}
-            className="mt-8"
-          >
-            <p className="text-sm text-muted-foreground mb-4">或者访问这些页面：</p>
-            <div className="flex flex-wrap gap-3 justify-center">
-              {[
-                { href: "/merchant", label: "商户" },
-                { href: "/docs/api", label: "文档" },
-                { href: "/settings", label: "设置" },
-                { href: "/", label: "首页" },
-              ].map((link) => (
-                <Link
-                  key={link.href}
-                  href={link.href}
-                  className="text-sm text-primary hover:text-primary/80 hover:underline transition-colors"
-                >
-                  {link.label}
-                </Link>
-              ))}
-            </div>
-          </motion.div>
+          </div>
         </motion.div>
+      </div>
+
+      <div className="absolute bottom-8 text-xs text-muted-foreground/30 font-mono">
+        ERR_HTTP_NOT_FOUND
       </div>
     </div>
   );

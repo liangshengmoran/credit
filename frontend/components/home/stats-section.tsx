@@ -1,25 +1,24 @@
 import * as React from "react";
 import { cn } from "@/lib/utils";
 import { motion } from "motion/react";
-import { Zap } from "lucide-react";
+import { Users, TrendingUp, Activity, Globe } from "lucide-react";
 import { CountingNumber } from "@/components/animate-ui/primitives/texts/counting-number";
-import { Button } from "@/components/ui/button";
 import { ChartConfig, ChartContainer, ChartTooltip, ChartTooltipContent } from "@/components/ui/chart";
 import { Area, AreaChart, CartesianGrid, XAxis } from "recharts";
 
 const chartData = [
-  { month: "January", desktop: 186 },
-  { month: "February", desktop: 305 },
-  { month: "March", desktop: 237 },
-  { month: "April", desktop: 73 },
+  { month: "Jan", desktop: 186 },
+  { month: "Feb", desktop: 305 },
+  { month: "Mar", desktop: 237 },
+  { month: "Apr", desktop: 73 },
   { month: "May", desktop: 209 },
-  { month: "June", desktop: 214 },
+  { month: "Jun", desktop: 214 },
 ];
 
 const chartConfig = {
   desktop: {
-    label: "Desktop",
-    color: "#3b82f6",
+    label: "Growth",
+    color: "hsl(var(--primary))",
   },
 } satisfies ChartConfig;
 
@@ -29,124 +28,144 @@ export interface StatsSectionProps {
 
 /**
  * Stats Section - 数据统计展示
- * 独立组件，使用 React.memo 优化性能
+ * 使用 Bento Grid 布局
  */
 export const StatsSection = React.memo(function StatsSection({ className }: StatsSectionProps) {
   return (
-    <section className={cn("relative z-10 w-full h-screen flex items-center justify-center px-6 snap-start", className)}>
-      <div className="container mx-auto max-w-6xl grid lg:grid-cols-2 gap-10 lg:gap-16 item-center">
+    <section className={cn("relative z-10 w-full min-h-screen lg:h-screen flex flex-col justify-center py-12 lg:py-0 px-4 lg:px-6 bg-transparent snap-start overflow-hidden", className)}>
+      <div className="container mx-auto max-w-6xl">
 
-        <div className="flex flex-col justify-center space-y-8">
-          <motion.div
-            initial={{ opacity: 0, y: 30 }}
+        <div className="text-center mb-10 lg:mb-24">
+          <motion.h2
+            initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
-            transition={{ duration: 0.8 }}
+            transition={{ duration: 0.6 }}
+            className="text-3xl md:text-5xl font-bold tracking-tight text-foreground mb-4 lg:mb-6"
           >
-            <h2 className="text-2xl md:text-4xl lg:text-5xl font-bold tracking-tight text-foreground leading-[1.1] mb-6">
-              用数据说话，<br />
-              见证非凡增长
-            </h2>
-            <p className="text-muted-foreground max-w-md leading-relaxed mb-8">
-              不仅仅是支付工具，更是您业务增长的引擎。实时数据洞察，助您做出明智决策，轻松掌握每一笔交易动态。
-            </p>
-          </motion.div>
+            用数据说话，见证非凡增长
+          </motion.h2>
+          <motion.p
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.6, delay: 0.1 }}
+            className="text-muted-foreground max-w-2xl mx-auto text-lg leading-relaxed"
+          >
+            实时数据洞察，助您做出明智决策，轻松掌握每一笔交易动态。
+          </motion.p>
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 lg:gap-6 auto-rows-[140px] lg:auto-rows-[180px]">
 
           <motion.div
             initial={{ opacity: 0, scale: 0.95 }}
             whileInView={{ opacity: 1, scale: 1 }}
             viewport={{ once: true }}
-            transition={{ duration: 0.8, delay: 0.2 }}
-            className="hidden lg:block relative lg:h-64 w-full rounded-3xl overflow-hidden p-2"
+            transition={{ duration: 0.5 }}
+            className="md:col-span-2 md:row-span-2 rounded-3xl 5 backdrop-blur-md border p-6 flex flex-col justify-between overflow-hidden relative group transition-colors duration-500"
           >
-            <ChartContainer config={chartConfig} className="w-full h-full">
-              <AreaChart
-                accessibilityLayer
-                data={chartData}
-                margin={{
-                  left: 12,
-                  right: 12,
-                }}
-              >
-                <CartesianGrid vertical={false} />
-                <XAxis
-                  dataKey="month"
-                  tickLine={false}
-                  axisLine={false}
-                  tickMargin={8}
-                  tickFormatter={(value) => value.slice(0, 3)}
-                />
-                <ChartTooltip
-                  cursor={false}
-                  content={<ChartTooltipContent indicator="dot" hideLabel />}
-                />
-                <Area
-                  dataKey="desktop"
-                  type="natural"
-                  fill="var(--color-desktop)"
-                  fillOpacity={0.4}
-                  stroke="var(--color-desktop)"
-                />
-              </AreaChart>
-            </ChartContainer>
-          </motion.div>
-        </div>
-
-        <div className="flex flex-col justify-center">
-          <motion.div
-            initial={{ opacity: 0, x: 20 }}
-            whileInView={{ opacity: 1, x: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.8 }}
-            className="mb-16 text-right lg:text-right text-center"
-          >
-            <div className="text-4xl md:text-6xl lg:text-7xl font-bold text-foreground leading-none tracking-tighter flex justify-end items-end gap-2">
-              <CountingNumber
-                number={12.3}
-                decimalPlaces={1}
-                initiallyStable={true}
-                inView={true}
-                inViewOnce={true}
-              /> M
+            <div className="relative z-10">
+              <div className="flex items-center gap-2 text-muted-foreground mb-2">
+                <Activity className="w-4 h-4" />
+                <span className="text-sm font-medium">总交易额趋势</span>
+              </div>
+              <div className="text-4xl font-bold tracking-tight flex items-baseline gap-1">
+                Coming Soon
+              </div>
             </div>
-            <div className="flex items-center justify-end gap-2 text-muted-foreground mt-2 font-medium">
-              <span>仅需一年时间</span>
-              <Button size="icon" variant="ghost" className="rounded-full h-8 w-8 bg-muted hover:bg-muted/80">
-                <Zap className="w-3 h-3" />
-              </Button>
-            </div>
-          </motion.div>
 
-          <div className="grid grid-cols-2 gap-x-12 gap-y-8 lg:gap-y-16">
-            {[
-              { value: 3000, label: "活跃用户", suffix: "+" },
-              { value: 300, label: "业务增长", suffix: "%" },
-              { value: 30000, label: "用户规模", suffix: "+" },
-              { value: 100, label: "交易规模", suffix: "M+" }
-            ].map((stat, i) => (
-              <motion.div
-                key={i}
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ duration: 0.6, delay: 0.2 + i * 0.1 }}
-                className="text-right lg:text-right text-center"
-              >
-                <div className="text-4xl md:text-5xl font-semibold text-foreground mb-2 flex justify-end items-center gap-1">
-                  <CountingNumber
-                    number={stat.value}
-                    initiallyStable={true}
-                    inView={true}
-                    inViewOnce={true}
+            <div className="absolute inset-0 top-20 pt-10 px-0">
+              <ChartContainer config={chartConfig} className="w-full h-full opacity-80 group-hover:opacity-100 transition-opacity">
+                <AreaChart data={chartData} margin={{ left: 0, right: 0, top: 0, bottom: 0 }}>
+                  <defs>
+                    <linearGradient id="fillDesktop" x1="0" y1="0" x2="0" y2="1">
+                      <stop offset="5%" stopColor="var(--color-desktop)" stopOpacity={0.3} />
+                      <stop offset="95%" stopColor="var(--color-desktop)" stopOpacity={0} />
+                    </linearGradient>
+                  </defs>
+                  <CartesianGrid vertical={false} strokeDasharray="3 3" stroke="rgba(255,255,255,0.05)" />
+                  <XAxis dataKey="month" hide />
+                  <Area
+                    dataKey="desktop"
+                    type="natural"
+                    fill="url(#fillDesktop)"
+                    stroke="var(--color-desktop)"
+                    strokeWidth={2}
                   />
-                  {stat.suffix}
-                </div>
-                <div className="text-sm font-medium text-muted-foreground uppercase tracking-widest">{stat.label}</div>
-              </motion.div>
-            ))}
-          </div>
-        </div>
+                  <ChartTooltip
+                    cursor={false}
+                    content={<ChartTooltipContent indicator="line" />}
+                  />
+                </AreaChart>
+              </ChartContainer>
+            </div>
+          </motion.div>
 
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.5, delay: 0.1 }}
+            className="md:col-span-1 md:row-span-1 rounded-3xl bg-blue-500/10 backdrop-blur-md border border-blue-500/20 p-6 flex flex-col justify-end relative overflow-hidden hovering-scale"
+          >
+            <div className="absolute top-4 right-4 text-blue-500/40">
+              <Users className="w-12 h-12" />
+            </div>
+            <div>
+              <div className="text-3xl font-bold text-foreground mb-1 flex items-baseline gap-1">
+                <span
+                  className="inline-block tabular-nums min-w-[86px] text-right"
+                >
+                  <CountingNumber number={30000} inViewOnce />
+                </span>
+                <span className="text-4xl align-baseline">+</span>
+              </div>
+              <div className="text-sm text-muted-foreground font-medium">活跃用户</div>
+            </div>
+          </motion.div>
+
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.5, delay: 0.2 }}
+            className="md:col-span-1 md:row-span-1 rounded-3xl bg-green-500/10 backdrop-blur-md border border-green-500/20 p-6 flex flex-col justify-end relative overflow-hidden hovering-scale"
+          >
+            <div className="absolute top-4 right-4 text-green-500/40">
+              <TrendingUp className="w-12 h-12" />
+            </div>
+            <div>
+              <div className="text-3xl font-bold text-foreground mb-1 flex items-baseline gap-1">
+                <CountingNumber number={300} inViewOnce />%
+              </div>
+              <div className="text-sm text-muted-foreground font-medium">业务增长</div>
+            </div>
+          </motion.div>
+
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.5, delay: 0.3 }}
+            className="md:col-span-2 md:row-span-1 rounded-3xl bg-white/5 backdrop-blur-md border border-primary/10 p-6 relative overflow-hidden group transition-colors"
+          >
+            <div className="relative z-10 flex flex-col justify-between h-full">
+              <div className="absolute top-6 left-4">
+                <div className="text-4xl md:text-5xl font-bold text-foreground tracking-tight flex items-baseline">
+                  $<CountingNumber number={100} inViewOnce decimalPlaces={0} />M+
+                </div>
+                <span className="text-sm font-medium text-muted-foreground">年度总交易规模</span>
+              </div>
+            </div>
+
+            <div className="absolute right-0 top-1/2 -translate-y-1/2 translate-x-1/4 opacity-10 transition-opacity duration-500 pointer-events-none">
+              <Globe className="w-48 h-48 text-orange-500" strokeWidth={0.5} />
+            </div>
+            <div className="absolute -right-20 -bottom-20 w-64 h-64 bg-orange-500/10 rounded-full blur-[80px] transition-colors pointer-events-none" />
+          </motion.div>
+
+        </div>
       </div>
     </section>
   );

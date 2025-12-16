@@ -1,22 +1,20 @@
 import * as React from "react";
 import Link from "next/link";
 import { motion } from "motion/react";
-import { ArrowRight, Zap, Shield, Globe } from "lucide-react";
+import { ArrowRight, Zap, Shield, Globe, CreditCard, Wallet } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
-import { AuroraBackground } from "@/components/ui/aurora-background";
 
 export interface HeroSectionProps {
   className?: string;
 }
 
 /**
- * Hero Section - 主页首屏
- * 使用 AuroraBackground 作为背景，配合 motion 优化性能
+ * Hero Section
  */
 export const HeroSection = React.memo(function HeroSection({ className }: HeroSectionProps) {
   return (
-    <AuroraBackground className={cn("snap-start", className)}>
+    <section className={cn("snap-start w-full", className)}>
       <motion.div
         initial={{ opacity: 0, y: 40 }}
         whileInView={{ opacity: 1, y: 0 }}
@@ -28,42 +26,59 @@ export const HeroSection = React.memo(function HeroSection({ className }: HeroSe
         }}
         className="relative z-10 w-full h-screen flex flex-col justify-center px-6"
       >
-        <div className="container mx-auto max-w-5xl grid lg:grid-cols-2 gap-8 lg:gap-12 items-center">
+        <div className="container mx-auto max-w-7xl grid lg:grid-cols-2 gap-12 lg:gap-20 items-center">
 
-          <div className="max-w-2xl">
+          <div className="max-w-5xl pt-20 lg:pt-0">
             <motion.h1
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
-              transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
-              className="text-3xl md:text-5xl lg:text-6xl font-bold tracking-tight leading-tight mb-6"
-              style={{ letterSpacing: "-0.06em", lineHeight: 1 }}
+              transition={{ duration: 0.6, delay: 0.1, ease: [0.16, 1, 0.3, 1] }}
+              className="text-4xl md:text-5xl lg:text-6xl font-extrabold tracking-tight leading-[1.1] mb-6 text-foreground"
             >
               LINUX DO PAY <br />
-              <span className="text-muted-foreground text-2xl md:text-4xl lg:text-5xl">开启社区支付的新未来。</span>
+              <span className="bg-clip-text text-primary">
+                社区支付新纪元
+              </span>
             </motion.h1>
+
+            <motion.p
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.6, delay: 0.2, ease: [0.16, 1, 0.3, 1] }}
+              className="text-sm md:text-base text-muted-foreground max-w-xl leading-relaxed mb-10"
+            >
+              专为社区开发者打造的社区支付基础设施
+              <br className="hidden md:block" />
+              快速集成、全球覆盖、安全可靠，助您轻松使用平台支付。
+            </motion.p>
 
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
-              transition={{ duration: 0.6, delay: 0.1, ease: [0.16, 1, 0.3, 1] }}
-              className="flex items-center gap-6"
+              transition={{ duration: 0.6, delay: 0.3, ease: [0.16, 1, 0.3, 1] }}
+              className="flex flex-col sm:flex-row items-center gap-4"
             >
-              <Link href="/login">
+              <Link href="/login" className="w-full sm:w-auto">
                 <Button
-                  className="px-8 rounded-full bg-primary text-primary-foreground hover:bg-primary/90 text-sm font-medium transition-transform active:scale-95"
+                  size="lg"
+                  className="w-full rounded-full bg-primary hover:bg-primary/90 font-medium transition-all active:scale-95"
                 >
                   立即开始
+                  <ArrowRight className="size-4" />
                 </Button>
               </Link>
 
-              <Link
-                href="/about"
-                className="group flex items-center text-sm gap-1 text-muted-foreground hover:text-foreground font-medium transition-colors"
-              >
-                探索权益
-                <ArrowRight className="w-4 h-4 transition-transform group-hover:translate-x-1" />
+              <Link href="/" className="w-full sm:w-auto">
+                <Button
+                  variant="secondary"
+                  size="lg"
+                  className="w-full rounded-full font-medium active:scale-95"
+                >
+                  了解更多
+                </Button>
               </Link>
             </motion.div>
 
@@ -71,54 +86,76 @@ export const HeroSection = React.memo(function HeroSection({ className }: HeroSe
               initial={{ opacity: 0 }}
               whileInView={{ opacity: 1 }}
               viewport={{ once: true }}
-              transition={{ duration: 0.8, delay: 0.3 }}
-              className="absolute bottom-12 flex flex-wrap gap-8 text-sm font-medium text-muted-foreground"
+              transition={{ duration: 0.8, delay: 0.5 }}
+              className="mt-16 flex flex-wrap gap-8 text-sm font-medium text-muted-foreground border-t border-border/50 pt-8"
             >
               <div className="flex items-center gap-2">
-                <Zap className="w-4 h-4 text-yellow-500" />
-                <span>快速到账</span>
+                <Zap className="w-5 h-5 text-yellow-500" />
+                <span>极速到账</span>
               </div>
               <div className="flex items-center gap-2">
-                <Globe className="w-4 h-4 text-blue-500" />
-                <span>全球覆盖</span>
+                <Globe className="w-5 h-5 text-blue-500" />
+                <span>全球支持</span>
               </div>
               <div className="flex items-center gap-2">
-                <Shield className="w-4 h-4 text-green-500" />
+                <Shield className="w-5 h-5 text-green-500" />
                 <span>安全加密</span>
               </div>
             </motion.div>
           </div>
 
-          <div className="hidden lg:flex justify-end relative">
+          <div className="hidden lg:block relative h-full min-h-[500px] w-full">
             <motion.div
-              initial={{ opacity: 0, x: 20 }}
-              whileInView={{ opacity: 1, x: 0 }}
+              initial={{ opacity: 0, x: 50, rotate: -5 }}
+              whileInView={{ opacity: 1, x: 0, rotate: 0 }}
               viewport={{ once: true }}
-              transition={{ duration: 0.8, delay: 0.2, ease: [0.16, 1, 0.3, 1] }}
-              className="relative"
+              transition={{ duration: 1, delay: 0.2, ease: "easeOut" }}
+              className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full max-w-md aspect-square"
             >
-              <div className="bg-neutral-900 text-white p-5 rounded-xl shadow-2xl max-w-xs w-80 transform rotate-[-2deg] hover:rotate-0 transition-transform duration-300">
-                <div className="flex justify-between items-start mb-4">
-                  <div className="flex gap-2 items-center">
-                    <div className="w-2 h-2 rounded-full bg-orange-500 animate-pulse" />
-                    <span className="text-sm font-medium text-neutral-200">
-                      LINUX DO PAY
-                    </span>
+              <div className="absolute top-0 right-0 w-64 h-64 bg-purple-500/30 rounded-full blur-3xl animate-pulse" />
+              <div className="absolute bottom-0 left-0 w-64 h-64 bg-blue-500/30 rounded-full blur-3xl animate-pulse delay-75" />
+
+              <div className="relative z-10 w-full h-64 bg-background/40 backdrop-blur-2xl border border-white/10 rounded-3xl shadow-2xl p-6 flex flex-col justify-between transform transition-transform hover:scale-[1.02] duration-500">
+                <div className="flex gap-4 items-center">
+                  <CreditCard className="size-6" />
+                  <span>LINUX DO PAY</span>
+                </div>
+
+                <div className="space-y-4">
+                  <div className="space-y-2">
+                    <div className="h-2 w-24 bg-white/10 rounded-full" />
+                    <div className="h-2 w-16 bg-white/10 rounded-full" />
+                  </div>
+                  <div className="flex justify-between items-end">
+                    <div>
+                      <p className="text-sm text-muted-foreground mb-1">Total Balance</p>
+                      <p className="text-3xl font-bold tracking-tight text-foreground">LDC 12,450.00</p>
+                    </div>
+                    <div className="h-8 w-8 rounded-full bg-primary" />
                   </div>
                 </div>
-                <div className="space-y-1">
-                  <p className="text-sm text-neutral-400">Received</p>
-                  <p className="text-2xl font-bold tracking-tight">LDC 1,000.00</p>
-                </div>
-                <div className="mt-4 pt-4 border-t border-white/10 flex items-center justify-between text-xs text-neutral-500">
-                  <span>刚刚</span>
-                  <span>•••• •••• •••• ••••</span>
-                </div>
               </div>
+
+              <motion.div
+                animate={{ y: [0, -20, 0] }}
+                transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
+                className="absolute -top-6 -right-6 z-20 bg-background/60 backdrop-blur-xl border border-white/20 p-4 rounded-2xl shadow-xl"
+              >
+                <div className="flex items-center gap-3">
+                  <div className="w-10 h-10 rounded-full bg-green-500/20 flex items-center justify-center text-green-500">
+                    <Wallet className="size-5" />
+                  </div>
+                  <div>
+                    <p className="text-xs text-muted-foreground">Income</p>
+                    <p className="text-sm font-bold">+ LDC 240.00</p>
+                  </div>
+                </div>
+              </motion.div>
+
             </motion.div>
           </div>
         </div>
       </motion.div>
-    </AuroraBackground>
+    </section>
   );
 });

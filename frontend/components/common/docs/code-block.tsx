@@ -1,7 +1,7 @@
 "use client";
 
 import * as React from "react";
-import { Check, Copy } from "lucide-react";
+import { Check, Copy, Terminal } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
@@ -29,23 +29,39 @@ export function CodeBlock({
   }, [raw]);
 
   return (
-    <div className="relative my-6 overflow-hidden rounded-lg border bg-zinc-950 ring-1 ring-white/10">
-      <div className="flex items-center justify-between border-b border-white/10 bg-zinc-900/50 px-4 py-2.5">
-        <span className="text-xs font-medium text-zinc-400 uppercase tracking-wider">
-          {language}
-        </span>
+    <div className="relative my-8 group overflow-hidden rounded-xl border border-zinc-700/50 dark:border-zinc-700 bg-[#1e1e1e] shadow-xl">
+      <div className="flex items-center justify-between border-b border-zinc-700/50 bg-[#252526] px-4 py-2">
+        <div className="flex items-center gap-3">
+          <div className="flex gap-1.5 opacity-60 group-hover:opacity-100 transition-opacity">
+            <div className="w-2.5 h-2.5 rounded-full bg-[#ff5f56]" />
+            <div className="w-2.5 h-2.5 rounded-full bg-[#ffbd2e]" />
+            <div className="w-2.5 h-2.5 rounded-full bg-[#27c93f]" />
+          </div>
+          <div className="h-4 w-[1px] bg-zinc-600/50 mx-1" />
+          <div className="flex items-center gap-1.5 text-xs font-medium text-zinc-400 uppercase tracking-widest">
+            <Terminal className="w-3 h-3" />
+            {language}
+          </div>
+        </div>
+
         <button
           onClick={copyToClipboard}
           className={cn(
-            "inline-flex h-6 w-6 items-center justify-center rounded-md transition-colors hover:bg-white/10 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50",
-            hasCopied ? "text-green-500" : "text-zinc-400"
+            "relative inline-flex h-7 w-7 items-center justify-center rounded-md transition-all duration-200",
+            "bg-transparent hover:bg-white/10 active:scale-95",
+            hasCopied ? "text-green-400" : "text-zinc-400 hover:text-zinc-200"
           )}
+          title="Copy code"
         >
-          {hasCopied ? <Check className="h-3.5 w-3.5" /> : <Copy className="h-3.5 w-3.5" />}
-          <span className="sr-only">Copy code</span>
+          {hasCopied ? (
+            <Check className="h-3.5 w-3.5" />
+          ) : (
+            <Copy className="h-3.5 w-3.5" />
+          )}
         </button>
       </div>
-      <div className={cn("overflow-x-auto p-4", className)} {...props}>
+
+      <div className={cn("overflow-x-auto p-5", className)} {...props}>
         <SyntaxHighlighter
           language={language}
           style={vscDarkPlus}
@@ -54,18 +70,19 @@ export function CodeBlock({
             padding: 0,
             background: "transparent",
             fontSize: "14px",
-            lineHeight: "1.5",
+            lineHeight: "1.7",
           }}
           codeTagProps={{
             style: {
               whiteSpace: "pre-wrap",
               wordBreak: "break-word",
+              fontFamily: "var(--font-mono, ui-monospace, SFMono-Regular, 'SF Mono', Menlo, Consolas, 'Liberation Mono', monospace)",
             }
           }}
           PreTag="div"
           CodeTag="code"
           wrapLines={true}
-          wrapLongLines={false} // Disable JS wrapping, rely on CSS
+          wrapLongLines={false}
         >
           {String(children).replace(/\n$/, "")}
         </SyntaxHighlighter>

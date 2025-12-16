@@ -3,6 +3,7 @@ import Link from "next/link";
 import { cn } from "@/lib/utils";
 import { motion } from "motion/react";
 import { Button } from "@/components/ui/button";
+import { Book, Check, Copy, Key, Terminal } from "lucide-react";
 
 export interface DeveloperSectionProps {
   className?: string;
@@ -13,39 +14,58 @@ export interface DeveloperSectionProps {
  * 独立组件，使用 React.memo 优化性能
  */
 export const DeveloperSection = React.memo(function DeveloperSection({ className }: DeveloperSectionProps) {
+  const [copied, setCopied] = React.useState(false);
+
+  const onCopy = () => {
+    setCopied(true);
+    setTimeout(() => setCopied(false), 2000);
+  };
+
   return (
-    <section className={cn("relative z-10 w-full h-screen flex items-center justify-center px-6 snap-start", className)}>
-      <div className="container mx-auto max-w-6xl grid lg:grid-cols-2 gap-8 items-center">
+    <section className={cn("relative z-10 w-full min-h-screen flex items-center justify-center px-6 snap-start overflow-hidden", className)}>
+      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] bg-purple-500/10 rounded-full blur-[120px] pointer-events-none" />
+      <div className="container mx-auto max-w-6xl grid lg:grid-cols-2 gap-12 lg:gap-20 items-center relative z-10">
 
         <motion.div
           initial={{ opacity: 0, x: -30 }}
           whileInView={{ opacity: 1, x: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.8 }}
-          className="order-2 lg:order-1"
+          className="order-2 lg:order-1 relative"
         >
-          <div className="relative overflow-hidden rounded-2xl border border-white/10 bg-[#1e1e1e] backdrop-blur-xl transition-all duration-300 hover:shadow-2xl cursor-default group">
-            <div className="flex gap-2 p-3 lg:p-4 border-b border-white/10 bg-white/5">
-              <div className="w-3 h-3 rounded-full bg-[#ff5f56]" />
-              <div className="w-3 h-3 rounded-full bg-[#ffbd2e]" />
-              <div className="w-3 h-3 rounded-full bg-[#27c93f]" />
+          <div className="relative overflow-hidden rounded-xl border border-white/20 bg-black backdrop-blur-xl shadow-2xl">
+            <div className="flex justify-between items-center px-4 py-3 border-b border-white/20">
+              <div className="flex gap-2">
+                <div className="w-3 h-3 rounded-full bg-[#ff5f56]" />
+                <div className="w-3 h-3 rounded-full bg-[#ffbd2e]" />
+                <div className="w-3 h-3 rounded-full bg-[#27c93f]" />
+              </div>
+              <div className="text-xs text-muted-foreground font-mono flex items-center gap-1">
+                <Terminal className="w-3 h-3" />
+                bash
+              </div>
+              <div className="w-10" />
             </div>
-            {/* Code Content */}
-            <div className="p-4 lg:p-6 overflow-x-auto">
-              <pre className="text-xs lg:text-sm font-mono text-neutral-300 leading-relaxed">
-                <code>
-                  <span className="text-purple-400">curl</span> <span className="text-green-400">https://pay.linux.do/api/v1/link/create</span> {'\n'}
-                  {'  '}-X <span className="text-yellow-400">POST</span> {'\n'}
-                  {'  '}-H <span className="text-yellow-400">&quot;Authorization: Bearer sk_live_...&quot;</span> {'\n'}
-                  {'  '}-H <span className="text-yellow-400">&quot;Content-Type: application/json&quot;</span> {'\n'}
-                  {'  '}-d <span className="text-blue-400">&apos;{'{'}</span>{'\n'}
-                  {'    '}<span className="text-orange-400">&quot;product_name&quot;</span>: <span className="text-green-400">&quot;Premium Pro&quot;</span>,{'\n'}
-                  {'    '}<span className="text-orange-400">&quot;amount&quot;</span>: <span className="text-blue-400">100.00</span>{'\n'}
-                  {'  '}<span className="text-blue-400">{'}'}&apos;</span>
+
+            <div className="p-6 overflow-x-auto relative group">
+              <div className="absolute top-4 right-4 opacity-0 group-hover:opacity-100 transition-opacity">
+                <Button variant="ghost" size="icon" className="h-8 w-8 text-neutral-400 hover:text-white" onClick={onCopy}>
+                  {copied ? <Check className="w-4 h-4" /> : <Copy className="w-4 h-4" />}
+                </Button>
+              </div>
+              <pre className="text-sm font-mono text-neutral-300 leading-relaxed">
+                <code className="block">
+                  <span className="text-purple-400">curl</span> <span className="text-green-400">https://api.linux.do/pay/v1/charges</span> \{'\n'}
+                  {'  '}-u <span className="text-yellow-400">sk_live_...:</span> \{'\n'}
+                  {'  '}-d <span className="text-blue-400">amount</span>=<span className="text-orange-400">1000</span> \{'\n'}
+                  {'  '}-d <span className="text-blue-400">currency</span>=<span className="text-green-400">&quot;cny&quot;</span> \{'\n'}
+                  {'  '}-d <span className="text-blue-400">description</span>=<span className="text-green-400">&quot;Pro Plan&quot;</span>
                 </code>
               </pre>
             </div>
           </div>
+
+          <div className="absolute -z-10 -bottom-10 -right-10 w-40 h-40 bg-blue-500/20 rounded-full blur-3xl animate-pulse" />
         </motion.div>
 
         <div className="flex flex-col justify-center space-y-8 order-1 lg:order-2">
@@ -55,22 +75,40 @@ export const DeveloperSection = React.memo(function DeveloperSection({ className
             viewport={{ once: true }}
             transition={{ duration: 0.8 }}
           >
-            <h2 className="text-2xl md:text-4xl lg:text-5xl font-bold tracking-tight text-foreground leading-[1.1] mb-6">
+            <h2 className="text-3xl md:text-5xl font-bold tracking-tight text-foreground leading-[1.1] mb-6">
               简单直接，<br />
-              RESTful API
+              开发者快速集成
             </h2>
-            <p className="text-muted-foreground max-w-md leading-relaxed mb-8">
-              标准化的 HTTP 接口设计，支持任意编程语言。无需复杂的 SDK 集成，直接调用即可快速完成支付功能接入。
+            <p className="text-muted-foreground text-lg leading-relaxed mb-8">
+              标准化的 RESTful API 接口，清晰的错误提示，完善的调试工具。无论您使用什么编程语言，只需几行代码，即可完成支付功能接入。
             </p>
 
-            <div className="flex gap-4">
+            <ul className="space-y-4 mb-8">
+              {[
+                "RESTful API 接口，语义清晰",
+                "完善的 Webhook 回调通知",
+                "简单调试，开发测试零成本",
+                "完善的文档和示例代码"
+              ].map((item, i) => (
+                <li key={i} className="flex items-center gap-3 text-sm text-foreground/80">
+                  <div className="w-6 h-6 rounded-full bg-primary/10 flex items-center justify-center text-primary">
+                    <Check className="w-3.5 h-3.5" />
+                  </div>
+                  {item}
+                </li>
+              ))}
+            </ul>
+
+            <div className="flex flex-wrap gap-4">
               <Link href="/docs/api">
-                <Button className="rounded-full px-8 bg-primary text-primary-foreground hover:bg-primary/90 text-sm font-medium">
-                  查看文档
+                <Button variant="secondary" className="rounded-full text-xs hover:bg-muted-foreground/10">
+                  <Book className="w-3 h-3" />
+                  API 文档
                 </Button>
               </Link>
               <Link href="/merchant">
-                <Button variant="outline" className="rounded-full px-8 border-none hover:bg-accent text-sm font-medium">
+                <Button variant="default" className="rounded-full text-xs hover:bg-primary/70">
+                  <Key className="w-3 h-3" />
                   获取 API Key
                 </Button>
               </Link>
