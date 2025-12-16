@@ -32,6 +32,28 @@ export function MerchantOnline() {
     return <LoadingPage text="在线商品" badgeText="商户" />
   }
 
+  if (apiKeys.length === 0) {
+    return (
+      <div className="flex flex-col gap-6 py-6 box-border h-[calc(100vh-60px)]">
+        <div className="flex items-center justify-between border-b border-border pb-2 shrink-0">
+          <h1 className="text-2xl font-semibold">在线商品</h1>
+        </div>
+        <div className="flex flex-col items-center justify-center p-8 text-center border border-dashed rounded-lg flex-1">
+          <div className="rounded-lg p-3 bg-muted/50 mb-4">
+            <Key className="size-6 text-muted-foreground" />
+          </div>
+          <h3 className="text-sm font-semibold mb-1">暂无商户应用</h3>
+          <p className="text-xs text-muted-foreground mb-4 max-w-sm mx-auto">
+            您还没有创建任何商户应用。请前往商户中心创建一个应用，即可开始管理在线商品。
+          </p>
+          <Button onClick={() => window.location.href = '/merchant'} variant="default" size="sm">
+            前往商户中心
+          </Button>
+        </div>
+      </div>
+    )
+  }
+
   return (
     <TransactionProvider
       defaultParams={{
@@ -68,7 +90,8 @@ function MerchantOnlineContent({ apiKeys, loadAPIKeys }: MerchantOnlineContentPr
   /* 加载 API Keys */
   useEffect(() => {
     loadAPIKeys()
-  }, [loadAPIKeys])
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
 
   /* 派生 selectedKey */
   const apiKeyId = searchParams.get("apiKeyId")
@@ -85,7 +108,8 @@ function MerchantOnlineContent({ apiKeys, loadAPIKeys }: MerchantOnlineContentPr
     if (apiKeys.length > 0 && !apiKeyId) {
       handleMerchantSelect(apiKeys[0].id)
     }
-  }, [apiKeys, apiKeyId, handleMerchantSelect])
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [apiKeys.length, apiKeyId])
 
   const selectedKey = apiKeys.find(k => k.id.toString() === apiKeyId) || null
 
