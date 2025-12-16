@@ -26,6 +26,7 @@ package model
 
 import (
 	"context"
+	"crypto/subtle"
 	"encoding/json"
 	"errors"
 	"fmt"
@@ -75,7 +76,7 @@ type User struct {
 	AvatarUrl        string          `json:"avatar_url" gorm:"size:100"`
 	TrustLevel       TrustLevel      `json:"trust_level" gorm:"index"`
 	PayScore         int64           `json:"pay_score" gorm:"default:0;index"`
-	PayKey           string          `json:"pay_key" gorm:"size:10;index"`
+	PayKey           string          `json:"pay_key" gorm:"size:128"`
 	SignKey          string          `json:"sign_key" gorm:"size:64;uniqueIndex;not null"`
 	TotalReceive     decimal.Decimal `json:"total_receive" gorm:"type:numeric(20,2);default:0"`
 	TotalPayment     decimal.Decimal `json:"total_payment" gorm:"type:numeric(20,2);default:0"`
@@ -95,6 +96,20 @@ func (u *User) GetByID(tx *gorm.DB, id uint64) error {
 		return err
 	}
 	return nil
+}
+
+// VerifyPayKey 验证用户支付密码
+// 使用用户的 SignKey 解密存储的加密密码，然后与输入的明文密码比较
+func (u *User) VerifyPayKey(inputPayKey string) bool {
+	if u.PayKey == "" {
+		return false
+	}
+	decrypted, err := util.Decrypt(u.SignKey, u.PayKey)
+	if err != nil {
+		return false
+	}
+
+	return subtle.ConstantTimeCompare([]byte(decrypted), []byte(inputPayKey)) == 1
 }
 
 func (u *User) GetUserGamificationScore(ctx context.Context) (*UserGamificationScoreResponse, error) {

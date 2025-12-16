@@ -55,10 +55,16 @@ func UpdatePayKey(c *gin.Context) {
 
 	user, _ := util.GetFromContext[*model.User](c, oauth.UserObjKey)
 
+	encryptedPayKey, err := util.Encrypt(user.SignKey, req.PayKey)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, util.Err(EncryptPayKeyFailed))
+		return
+	}
+
 	if err := db.DB(c.Request.Context()).
 		Model(&model.User{}).
 		Where("id = ?", user.ID).
-		Update("pay_key", req.PayKey).Error; err != nil {
+		Update("pay_key", encryptedPayKey).Error; err != nil {
 		c.JSON(http.StatusInternalServerError, util.Err(err.Error()))
 		return
 	}

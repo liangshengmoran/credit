@@ -25,7 +25,6 @@
 package link
 
 import (
-	"crypto/subtle"
 	"encoding/json"
 	"errors"
 	"fmt"
@@ -214,7 +213,7 @@ func PayByLink(c *gin.Context) {
 
 	currentUser, _ := util.GetFromContext[*model.User](c, oauth.UserObjKey)
 
-	if subtle.ConstantTimeCompare([]byte(currentUser.PayKey), []byte(req.PayKey)) != 1 {
+	if !currentUser.VerifyPayKey(req.PayKey) {
 		c.JSON(http.StatusBadRequest, util.Err(common.PayKeyIncorrect))
 		return
 	}

@@ -25,8 +25,11 @@
 package common
 
 const (
-	// PayTypeLDPay Linux Do Pay 支付类型标识
-	PayTypeLDPay = "ldpay"
-	// PayTypeEPay Epay 支付类型
-	PayTypeEPay = "epay"
+	BannedAccount               = "账号已被封禁"
+	AmountMustBeGreaterThanZero = "金额必须大于0"
+	AmountDecimalPlacesExceeded = "金额小数位数不能超过2位"
+	InsufficientBalance         = "余额不足"
+	DailyLimitExceeded          = "已超过每日限额"
+	PayKeyIncorrect             = "支付密钥错误"
+	CannotPaySelf               = "不能给自己付款"
 )

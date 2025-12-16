@@ -22,11 +22,8 @@
  * SOFTWARE.
  */
 
-package common
+package user
 
 const (
-	// PayTypeLDPay Linux Do Pay 支付类型标识
-	PayTypeLDPay = "ldpay"
-	// PayTypeEPay Epay 支付类型
-	PayTypeEPay = "epay"
+	EncryptPayKeyFailed = "加密支付密码失败"
 )

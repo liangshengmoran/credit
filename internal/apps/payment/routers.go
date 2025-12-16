@@ -25,7 +25,6 @@
 package payment
 
 import (
-	"crypto/subtle"
 	"encoding/json"
 	"errors"
 	"fmt"
@@ -411,7 +410,7 @@ func PayMerchantOrder(c *gin.Context) {
 		return
 	}
 
-	if subtle.ConstantTimeCompare([]byte(orderCtx.CurrentUser.PayKey), []byte(req.PayKey)) != 1 {
+	if !orderCtx.CurrentUser.VerifyPayKey(req.PayKey) {
 		c.JSON(http.StatusBadRequest, util.Err(common.PayKeyIncorrect))
 		return
 	}
@@ -532,7 +531,7 @@ func Transfer(c *gin.Context) {
 
 	currentUser, _ := util.GetFromContext[*model.User](c, oauth.UserObjKey)
 
-	if subtle.ConstantTimeCompare([]byte(currentUser.PayKey), []byte(req.PayKey)) != 1 {
+	if !currentUser.VerifyPayKey(req.PayKey) {
 		c.JSON(http.StatusBadRequest, util.Err(common.PayKeyIncorrect))
 		return
 	}
