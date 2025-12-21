@@ -14,23 +14,32 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-package cmd
+package idgen
 
 import (
 	"log"
 
-    "github.com/linux-do/credit/internal/task/scheduler"
-
-	"github.com/spf13/cobra"
+	"github.com/bwmarrin/snowflake"
+	"github.com/linux-do/credit/internal/config"
 )
 
-var schedulerCmd = &cobra.Command{
-	Use:   "scheduler",
-	Short: "credit Scheduler",
-	Run: func(cmd *cobra.Command, args []string) {
-		log.Println("[Scheduler] 启动定时任务调度服务")
-		if err := scheduler.StartScheduler(); err != nil {
-			log.Fatalf("[调度器] 启动失败: %v", err)
-		}
-	},
+// 2025-12-01 00:00:00 UTC 的毫秒时间戳
+const epoch int64 = 1764547200000
+
+var node *snowflake.Node
+
+func init() {
+	snowflake.Epoch = epoch
+
+	nodeID := config.Config.App.NodeID
+	var err error
+	node, err = snowflake.NewNode(nodeID)
+	if err != nil {
+		log.Fatalf("[Snowflake] init failed: %v\n", err)
+	}
+	log.Printf("[Snowflake] initialized with node ID: %d, epoch: 2025-12-01\n", nodeID)
+}
+
+func NextUint64ID() uint64 {
+	return uint64(node.Generate().Int64())
 }

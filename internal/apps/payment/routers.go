@@ -32,7 +32,7 @@ import (
 	"github.com/linux-do/credit/internal/config"
 	"github.com/linux-do/credit/internal/service"
 	"github.com/linux-do/credit/internal/task"
-	"github.com/linux-do/credit/internal/task/schedule"
+    "github.com/linux-do/credit/internal/task/scheduler"
 
 	"github.com/gin-gonic/gin"
 	"github.com/linux-do/credit/internal/db"
@@ -316,7 +316,7 @@ func RefundMerchantOrder(c *gin.Context) {
 
 		if err := tx.Model(&model.Order{}).
 			Where("id = ?", order.ID).
-			UpdateColumn("status", model.OrderStatusRefund).Error; err != nil {
+			Update("status", model.OrderStatusRefund).Error; err != nil {
 			return err
 		}
 
@@ -467,10 +467,10 @@ func PayMerchantOrder(c *gin.Context) {
 				"order_id":  order.ID,
 				"client_id": order.ClientID,
 			})
-			if _, errTask := schedule.AsynqClient.Enqueue(
+			if _, errTask := scheduler.AsynqClient.Enqueue(
 				asynq.NewTask(task.MerchantPaymentNotifyTask, notifyPayload),
 				asynq.Queue(task.QueueWebhook),
-				asynq.MaxRetry(5),
+				asynq.MaxRetry(10),
 				asynq.Timeout(30*time.Second),
 			); errTask != nil {
 				return fmt.Errorf("下发商户回调任务失败: %w", errTask)

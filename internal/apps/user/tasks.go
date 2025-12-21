@@ -27,8 +27,6 @@ import (
 	"github.com/linux-do/credit/internal/db"
 	"github.com/linux-do/credit/internal/logger"
 	"github.com/linux-do/credit/internal/model"
-	"github.com/linux-do/credit/internal/task"
-	"github.com/linux-do/credit/internal/task/schedule"
 	"github.com/shopspring/decimal"
 	"gorm.io/gorm"
 )
@@ -36,7 +34,7 @@ import (
 // HandleUpdateUserGamificationScores 处理所有用户积分更新任务
 func HandleUpdateUserGamificationScores(ctx context.Context, t *asynq.Task) error {
 	// 分页处理用户
-	pageSize := 200
+	pageSize := 1000
 	lastID := uint64(0)
 	currentDelay := 0 * time.Second
 
@@ -66,17 +64,10 @@ func HandleUpdateUserGamificationScores(ctx context.Context, t *asynq.Task) erro
 		}
 
 		for _, user := range users {
-			currentDelay += time.Duration(config.Config.Schedule.UserGamificationScoreDispatchIntervalSeconds) * time.Second
+			currentDelay += time.Duration(config.Config.Scheduler.UserGamificationScoreDispatchIntervalSeconds) * time.Second
 
-			payload, _ := json.Marshal(map[string]interface{}{
-				"user_id": user.ID,
-			})
-
-			if _, errTask := schedule.AsynqClient.Enqueue(asynq.NewTask(task.UpdateSingleUserGamificationScoreTask, payload), asynq.Queue(task.QueueWhitelistOnly), asynq.ProcessIn(currentDelay), asynq.MaxRetry(3)); errTask != nil {
-				logger.ErrorF(ctx, "下发用户[%s]积分计算任务失败: %v", user.Username, errTask)
-				return errTask
-			} else {
-				logger.InfoF(ctx, "下发用户[%s]积分计算任务成功", user.Username)
+			if err := user.EnqueueBadgeScoreTask(ctx, currentDelay); err != nil {
+				return err
 			}
 		}
 

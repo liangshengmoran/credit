@@ -118,7 +118,7 @@ func doOAuth(ctx context.Context, code string) (*model.User, error) {
 				span.SetStatus(codes.Error, err.Error())
 				return nil, err
 			}
-			user.EnqueueBadgeScoreTask(ctx)
+			user.EnqueueBadgeScoreTask(ctx, 0)
 		} else {
 			// query failed
 			span.SetStatus(codes.Error, txByUsername.Error.Error())
@@ -131,7 +131,7 @@ func doOAuth(ctx context.Context, code string) (*model.User, error) {
 				span.SetStatus(codes.Error, err.Error())
 				return nil, err
 			}
-			user.EnqueueBadgeScoreTask(ctx)
+			user.EnqueueBadgeScoreTask(ctx, 0)
 		} else {
 			if err = user.CheckActive(); err != nil {
 				span.SetStatus(codes.Error, err.Error())

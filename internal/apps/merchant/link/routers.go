@@ -32,7 +32,7 @@ import (
 	"github.com/linux-do/credit/internal/model"
 	"github.com/linux-do/credit/internal/service"
 	"github.com/linux-do/credit/internal/task"
-	"github.com/linux-do/credit/internal/task/schedule"
+    "github.com/linux-do/credit/internal/task/scheduler"
 	"github.com/linux-do/credit/internal/util"
 	"github.com/shopspring/decimal"
 	"gorm.io/gorm"
@@ -300,10 +300,10 @@ func PayByLink(c *gin.Context) {
 				"order_id":  order.ID,
 				"client_id": merchantAPIKey.ClientID,
 			})
-			if _, errTask := schedule.AsynqClient.Enqueue(
+			if _, errTask := scheduler.AsynqClient.Enqueue(
 				asynq.NewTask(task.MerchantPaymentNotifyTask, notifyPayload),
 				asynq.Queue(task.QueueWebhook),
-				asynq.MaxRetry(5),
+				asynq.MaxRetry(10),
 				asynq.Timeout(30*time.Second),
 			); errTask != nil {
 				return fmt.Errorf("下发商户回调任务失败: %w", errTask)

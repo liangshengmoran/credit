@@ -335,7 +335,7 @@ func RefundReview(c *gin.Context) {
 
 				if err := tx.Model(&model.Order{}).
 					Where("id = ?", order.ID).
-					UpdateColumn("status", model.OrderStatusRefund).Error; err != nil {
+					Update("status", model.OrderStatusRefund).Error; err != nil {
 					return err
 				}
 			} else if status == model.DisputeStatusClosed {
@@ -353,7 +353,7 @@ func RefundReview(c *gin.Context) {
 
 				if err := tx.Model(&model.Order{}).
 					Where("id = ?", order.ID).
-					UpdateColumn("status", model.OrderStatusRefused).Error; err != nil {
+					Update("status", model.OrderStatusRefused).Error; err != nil {
 					return err
 				}
 			}
@@ -427,7 +427,7 @@ func CloseDispute(c *gin.Context) {
 
 			if err := tx.Model(&model.Order{}).
 				Where("id = ?", order.ID).
-				UpdateColumn("status", model.OrderStatusSuccess).Error; err != nil {
+				Update("status", model.OrderStatusSuccess).Error; err != nil {
 				return err
 			}
 

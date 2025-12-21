@@ -29,7 +29,7 @@ import (
 	"github.com/linux-do/credit/internal/logger"
 	"github.com/linux-do/credit/internal/model"
 	"github.com/linux-do/credit/internal/task"
-	"github.com/linux-do/credit/internal/task/schedule"
+	"github.com/linux-do/credit/internal/task/scheduler"
 	"gorm.io/gorm"
 	"gorm.io/gorm/clause"
 )
@@ -43,7 +43,7 @@ func HandleAutoRefundExpiredDisputes(ctx context.Context, t *asynq.Task) error {
 		return errGet
 	}
 
-	pageSize := 200
+	pageSize := 1000
 	lastID := uint64(0)
 	currentDelay := 0 * time.Second
 
@@ -68,16 +68,16 @@ func HandleAutoRefundExpiredDisputes(ctx context.Context, t *asynq.Task) error {
 		}
 
 		for _, dispute := range disputes {
-			currentDelay += time.Duration(config.Config.Schedule.DisputeAutoRefundDispatchIntervalSeconds) * time.Second
+			currentDelay += time.Duration(config.Config.Scheduler.DisputeAutoRefundDispatchIntervalSeconds) * time.Second
 
 			payload, _ := json.Marshal(map[string]interface{}{
 				"dispute_id": dispute.ID,
 			})
 
-			if _, errTask := schedule.AsynqClient.Enqueue(
+			if _, errTask := scheduler.AsynqClient.Enqueue(
 				asynq.NewTask(task.AutoRefundSingleDisputeTask, payload),
 				asynq.ProcessIn(currentDelay),
-				asynq.MaxRetry(3),
+				asynq.MaxRetry(5),
 			); errTask != nil {
 				logger.ErrorF(ctx, "下发争议[ID:%d]自动退款任务失败: %v", dispute.ID, errTask)
 				return errTask
@@ -177,7 +177,7 @@ func HandleAutoRefundSingleDispute(ctx context.Context, t *asynq.Task) error {
 		// 更新订单状态为已退款
 		if err := tx.Model(&model.Order{}).
 			Where("id = ?", order.ID).
-			UpdateColumn("status", model.OrderStatusRefund).Error; err != nil {
+			Update("status", model.OrderStatusRefund).Error; err != nil {
 			return fmt.Errorf("更新订单状态失败: %w", err)
 		}
 

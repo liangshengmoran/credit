@@ -81,17 +81,9 @@ func HandleMerchantPaymentNotify(ctx context.Context, t *asynq.Task) error {
 
 	if err := sendCallbackRequest(ctx, apiKey.NotifyURL, callbackParams); err != nil {
 		retried, _ := asynq.GetRetryCount(ctx)
-		maxRetry := 5
-
-		logger.ErrorF(ctx, "商户回调失败: 订单[ID:%d] 重试次数[%d/%d] 错误: %v",
-			payload.OrderID, retried+1, maxRetry, err)
-
-		if retried >= maxRetry-1 {
-			logger.ErrorF(ctx, "商户回调达到最大重试次数，回调最终失败: 订单[ID:%d]", payload.OrderID)
-			return nil // 任务完成（虽然失败）
-		}
-
-		return fmt.Errorf("商户回调失败: %w", err)
+		logger.ErrorF(ctx, "商户回调失败: 订单[ID:%d] 重试次数[%d] 错误: %v",
+			payload.OrderID, retried+1, err)
+		return err
 	}
 
 	logger.InfoF(ctx, "商户回调成功: 订单[ID:%d] ClientID[%s]", payload.OrderID, payload.ClientID)
