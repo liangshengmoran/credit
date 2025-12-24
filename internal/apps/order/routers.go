@@ -88,10 +88,21 @@ func ListTransactions(c *gin.Context) {
 			// community 类型：查询当前用户作为收款方的 community 订单
 			baseQuery = baseQuery.Where("orders.type = ? AND orders.payee_user_id = ?", orderType, user.ID)
 		case model.OrderTypeOnline:
-			// 不为空查询商家的 online 订单，否则按照 online 查询
 			if req.ClientID != "" {
-				baseQuery = baseQuery.Where("orders.type = ? AND orders.client_id = ?", orderType, req.ClientID)
 				clientIDHandled = true
+				// 验证 client_id 是否属于当前用户
+				var count int64
+				if err := db.DB(c.Request.Context()).Model(&model.MerchantAPIKey{}).
+					Where("client_id = ? AND user_id = ?", req.ClientID, user.ID).
+					Count(&count).Error; err != nil {
+					c.JSON(http.StatusInternalServerError, util.Err(err.Error()))
+					return
+				}
+				if count > 0 {
+					baseQuery = baseQuery.Where("orders.type = ? AND orders.client_id = ?", orderType, req.ClientID)
+				} else {
+					baseQuery = baseQuery.Where("orders.type = ? AND orders.client_id = ? AND (orders.payer_user_id = ? OR orders.payee_user_id = ?)", orderType, req.ClientID, user.ID, user.ID)
+				}
 			} else {
 				baseQuery = baseQuery.Where("orders.type = ? AND (orders.payer_user_id = ? OR orders.payee_user_id = ?)", orderType, user.ID, user.ID)
 			}
